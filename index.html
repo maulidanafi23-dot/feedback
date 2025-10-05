@@ -235,7 +235,7 @@
 
     const scriptURL = "https://script.google.com/macros/s/AKfycbxuuXI5G34AwEzOY97lCm6sNJjzMEC9Z6GlSnl47CO92xw9zDtX5W-IjljmHaklua4Ibw/exec";
 
-    submitBtn.addEventListener('click', (e) => {
+    submitBtn.addEventListener('click', async (e) => {
       e.preventDefault();
       submitBtn.classList.add("clicked");
       setTimeout(() => submitBtn.classList.remove("clicked"), 300);
@@ -249,28 +249,39 @@
       const emojiToSend  = emojiEl.textContent;
       const labelToSend  = emojiLabel.textContent;
 
-      popup.style.display = "flex";
-      setTimeout(() => popup.style.display = "none", 4500);
+      try {
+        const response = await fetch(scriptURL, {
+          method: "POST",
+          body: JSON.stringify({
+            rating: ratingToSend,
+            emoji: emojiToSend,
+            label: labelToSend,
+            review: review,
+            suggestion: selectedChips.join(", ")
+          }),
+          headers: { "Content-Type": "text/plain" }
+        });
 
-      document.getElementById('review').value = "";
-      stars.forEach(s => s.classList.remove("selected"));
-      chips.forEach(c => c.classList.remove("selected"));
-      emojiEl.textContent = "🙂";
-      emojiLabel.textContent = "";
+        if (response.ok) {
+          popup.style.display = "flex";
+          setTimeout(() => popup.style.display = "none", 4000);
 
-      fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify({
-          rating: ratingToSend,
-          emoji: emojiToSend,
-          label: labelToSend,
-          review: review,
-          suggestion: selectedChips.join(", ")
-        }),
-        headers: { "Content-Type": "text/plain" }
-      }).catch(err => console.error("Gagal kirim feedback:", err));
+          // Reset form
+          document.getElementById('review').value = "";
+          stars.forEach(s => s.classList.remove("selected"));
+          chips.forEach(c => c.classList.remove("selected"));
+          emojiEl.textContent = "🙂";
+          emojiLabel.textContent = "";
+        } else {
+          alert("Gagal menyimpan data, coba lagi!");
+        }
+      } catch (err) {
+        console.error("Gagal kirim feedback:", err);
+        alert("Terjadi kesalahan koneksi!");
+      }
     });
   </script>
 </body>
 </html>
+
 
