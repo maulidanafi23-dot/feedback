@@ -75,11 +75,12 @@
     }
 
     .suggestions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 8px;
-    margin-bottom: 10px;
-  }
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
     .chip {
       background: #e0e0e0;
       border-radius: 20px;
@@ -89,8 +90,6 @@
       border: 1px solid #ddd;
       transition: all 0.2s;
       user-select: none;
-      text-align: center;
-      justify-self: center;
     }
     .chip.selected {
       background: #ffecec;
@@ -297,6 +296,7 @@
 
 </body>
 </html>
+
 
 
 
